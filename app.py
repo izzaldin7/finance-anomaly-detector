@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.ensemble import IsolationForest
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 st.set_page_config(page_title="Finance Anomaly Detector", layout="wide")
 st.title("Personal Finance Anomaly Detector")
@@ -45,36 +46,35 @@ if uploaded_file is not None:
         st.subheader("Detected Anomalies")
         st.dataframe(anomalies)
 
-        st.subheader("Anomaly Visualization")
+        st.subheader("Visual Analysis")
 
-        col1, col2 = st.columns(2)
+        df["Date"] = pd.to_datetime(df["Date"])
+        df = df.sort_values("Date")
 
-        with col1:
-            st.markdown("### Index vs Amount")
+        fig, col = plt.subplots(1, 2, figsize=(16, 6))
 
-            fig1, ax1 = plt.subplots(figsize=(6, 4))
-            normal = df[df["anomaly"] == "Normal"]
-            anomaly = df[df["anomaly"] == "Anomaly"]
+        col[0].scatter(df.index, df["Amount"], alpha=0.6)
 
-            ax1.scatter(normal.index, normal["Amount"])
-            ax1.scatter(anomaly.index, anomaly["Amount"])
-            ax1.set_xlabel("Transaction Index")
-            ax1.set_ylabel("Amount")
-            ax1.set_title("Index vs Amount")
+        anomaly_points = df[df["anomaly"] == "Anomaly"]
+        col[0].scatter(anomaly_points.index, anomaly_points["Amount"], s=100)
 
-            st.pyplot(fig1)
+        col[0].set_title("Anomaly Detection (Index vs Amount)")
+        col[0].set_xlabel("Transaction Index")
+        col[0].set_ylabel("Amount")
 
-        with col2:
-            st.markdown("### Over Time")
+        daily = df.groupby("Date")["Amount"].sum().reset_index()
 
-            df["Date"] = pd.to_datetime(df["Date"])
+        col[1].plot(daily["Date"], daily["Amount"])
 
-            fig2, ax2 = plt.subplots(figsize=(6, 4))
-            ax2.plot(df["Date"], df["Amount"])
-            ax2.set_xlabel("Date")
-            ax2.set_ylabel("Amount")
-            ax2.set_title("Amount Over Time")
+        col[1].set_title("Daily Net Spending")
+        col[1].set_xlabel("Date")
+        col[1].set_ylabel("Net Amount")
 
-            st.pyplot(fig2)
+        col[1].xaxis.set_major_locator(mdates.DayLocator(interval=3))
+        col[1].xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+        plt.setp(col[1].xaxis.get_majorticklabels(), rotation=45)
+
+        plt.tight_layout()
+        st.pyplot(fig)
 
         st.success("Detection complete.")
