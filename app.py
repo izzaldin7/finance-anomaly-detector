@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
 
 st.set_page_config(page_title="Finance Anomaly Detector", layout="wide")
 st.title("Personal Finance Anomaly Detector")
@@ -19,21 +20,28 @@ if uploaded_file is not None:
         st.error("Your CSV must contain an 'Amount' colmun.")
     else:
         df["Amount"] = df["Amount"].astype(float)
+        df["Abs_amount"] = df["Amount"].abs()
+        df["is_debit"] = df["Amount"].apply(lambda x: 1 if x < 0 else 0)
+        df["is_credit"] = df["Amount"].apply(lambda x: 1 if x > 0 else 0)
+        
+        features = ["Amount", "Abs_amount", "is_debit", "is_credit"]
+        X = df[features]
 
-        X = df[["Amount"]]
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
 
         model = IsolationForest(contamination=0.05, random_state=42)
-        model.fit(X)
+        model.fit(X_scaled)
 
-        df["anomaly"] = model.predict(X)
+        df["anomaly"] = model.predict(X_scaled)
         df["anomaly"] = df["anomaly"].map({1: "Normal", -1: "Anomaly"})
-
+        
         st.subheader("Anomaly Detetcion Results")
         st.dataframe(df)
 
         anomalies = df[df["anomaly"] == "Anomaly"]
 
-        st.subheader("Detected Anomalies!")
+        st.subheader("Detected Anomalies")
         st.dataframe(anomalies)
 
         st.success("Detection complete.")
