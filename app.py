@@ -32,11 +32,27 @@ if uploaded_file is not None:
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
 
-        model = IsolationForest(contamination=0.05, random_state=42)
+        st.sidebar.header("Model Settings")
+
+        contamination = st.sidebar.slider("Anomaly Sensitivity (%)", min_value = 1, max_value = 50, value = 5) / 100
+
+        model = IsolationForest(contamination=contamination, random_state=42)
         model.fit(X_scaled)
 
         df["anomaly"] = model.predict(X_scaled)
         df["anomaly"] = df["anomaly"].map({1: "Normal", -1: "Anomaly"})
+
+        st.subheader("Financial Summary")
+
+        total_debit = df[df["Amount"] < 0]["Amount"].sum()
+        total_credit = df[df["Amount"] > 0]["Amount"].sum()
+        anomaly_count = df[df["anomaly"] == "Anomaly"].shape[0]
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric("Total Debit", f"{total_debit:.2f}")
+        col2.metric("Total Credit", f"{total_credit:.2f}")
+        col3.metric("Anomalies Detected", anomaly_count)
         
         st.subheader("Anomaly Detetcion Results")
         st.dataframe(df)
