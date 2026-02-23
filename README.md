@@ -69,12 +69,9 @@ The goal is to identify unusual spending or income patterns.
 ## 📷 Screenshot
 
 <img width="1280" height="605" alt="Screenshot 2026-02-23 at 5 32 04 AM" src="https://github.com/user-attachments/assets/f903eee7-4698-4bb4-9add-dd2543365566" />
-<img width="1280" height="605" alt="Screenshot 2026-02-23 at 5 32 04 AM" src="https://github.com/user-attachments/assets/f903eee7-4698-4bb4-9add-dd2543365566" />
 
 <img width="949" height="631" alt="Screenshot 2026-02-23 at 5 32 36 AM" src="https://github.com/user-attachments/assets/eb375558-427b-40bb-820b-2abbc4f09bff" />
-<img width="949" height="631" alt="Screenshot 2026-02-23 at 5 32 36 AM" src="https://github.com/user-attachments/assets/eb375558-427b-40bb-820b-2abbc4f09bff" />
 
-<img width="936" height="599" alt="Screenshot 2026-02-23 at 5 32 51 AM" src="https://github.com/user-attachments/assets/62a27ab3-2d30-4e93-af9e-96de668a7081" />
 <img width="936" height="599" alt="Screenshot 2026-02-23 at 5 32 51 AM" src="https://github.com/user-attachments/assets/62a27ab3-2d30-4e93-af9e-96de668a7081" />
 
 
